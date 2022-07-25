@@ -33,5 +33,3 @@
   ([] (b (slurp (io/resource "07.txt"))))
   ([input]
    (fuel (parse-input input) dist-b)))
-
-(b)
