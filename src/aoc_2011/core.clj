@@ -4,7 +4,9 @@
   (:require [aoc-2011.day-03 :as day_03])
   (:require [aoc-2011.day-04 :as day_04])
   (:require [aoc-2011.day-05 :as day_05])
-  (:require [aoc-2011.day-06 :as day_06]))
+  (:require [aoc-2011.day-06 :as day_06])
+  (:require [aoc-2011.day-07 :as day_07])
+  (:require [aoc-2011.day-08 :as day_08]))
 
 (defn -main
   [& args]
@@ -20,6 +22,10 @@
     (day_05/a)
     (day_05/b)
     (day_06/a)
-    (day_06/b)]))
+    (day_06/b)
+    (day_07/a)
+    (day_07/b)
+    (day_08/a)
+    (day_08/b)]))
 
 (-main)
