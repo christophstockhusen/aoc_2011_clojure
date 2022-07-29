@@ -18,5 +18,5 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
     (is (= 26 (a input)))))
 
 (deftest test-b
-  (testing "Problem 6 Part 2"
+  (testing "Problem 8 Part 2"
     (is (= 61229 (b input)))))

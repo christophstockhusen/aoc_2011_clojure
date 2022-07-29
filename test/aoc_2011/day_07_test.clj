@@ -9,5 +9,5 @@
     (is (= 37 (a input)))))
 
 (deftest test-b
-  (testing "Problem 6 Part 2"
+  (testing "Problem 7 Part 2"
     (is (= 168 (b input)))))

@@ -1,5 +1,5 @@
 (ns aoc-2011.day-09-test
-  (:require [aoc-2011.day-09 :refer :all])
+  (:require [aoc-2011.day-10 :refer :all])
   (:require [clojure.test :refer :all]))
 
 (def input "2199943210
@@ -13,5 +13,5 @@
     (is (= 15 (a input)))))
 
 (deftest test-b
-  (testing "Problem 6 Part 2"
+  (testing "Problem 9 Part 2"
     (is (= 1134 (b input)))))
