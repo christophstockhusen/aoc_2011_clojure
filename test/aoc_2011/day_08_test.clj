@@ -1,5 +1,5 @@
 (ns aoc-2011.day-08-test
-  (:require [aoc-2011.day-08-test :refer :all])
+  (:require [aoc-2011.day-08 :refer :all])
   (:require [clojure.test :refer :all]))
 
 (def input "be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
