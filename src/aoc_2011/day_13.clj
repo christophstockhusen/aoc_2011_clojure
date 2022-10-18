@@ -68,4 +68,5 @@
   ([input]
    (let [{dots :dots folds :folds max-x :max-x max-y :max-y} (parse-input input)]
      (->> (process-folds {:dots dots :max-x max-x :max-y max-y} folds)
-          (print-dots)))))
+          (print-dots)
+          (println)))))
