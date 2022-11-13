@@ -1,9 +1,8 @@
 (ns aoc-2011.day-18
   (:require [clojure.java.io :refer [resource]]
             [clojure.string :refer [split-lines]]
+            [clojure.walk :as walk]
             [clojure.zip :as z]))
-
-;; (remove-ns 'aoc-2011.day-18)
 
 (defn parse-input [input]
   (->> (split-lines input)
@@ -29,24 +28,9 @@
             nil
             (recur (next-fn loc))))))))
 
-(defn next-regular-pair [loc] (find-next-node loc :next regular-pair?))
-
-(let [loc (z/vector-zip [0 [1 2] 10])]
-  (find-next-node loc :next regular-pair?))
-
-(let [loc (z/vector-zip [0 [1 2] 10])]
-  (-> loc
-      ;; (z/next)
-      ;; (z/next)
-      ;; (z/next)
-      ;; (z/next)
-      ;; (z/next)
-      ;; (z/next)
-      (find-next-node :next splitable-loc?)))
-
 (defn explodable-pair? [loc]
   (and (regular-pair? loc)
-       (< 4 (count (z/path loc)))))
+       (<= 4 (count (z/path loc)))))
 
 (defn next-explodable [loc]
   (find-next-node loc :next explodable-pair?))
@@ -60,20 +44,21 @@
 (defn prev-regular-number [loc]
   (find-next-node loc :prev regular-number?))
 
-
 (defn explode [loc]
-  (if-let [node (next-explodable loc)]
-    (let [[l r] (z/node node)
-          loc (z/replace node 0)
-          loc (if-let [loc (prev-regular-number loc)]
-                (-> (z/edit loc + l)
-                    (next-regular-number))
-                loc)
-          loc (if-let [loc (next-regular-number loc)]
-                (z/edit loc + r)
-                loc)]
-      loc)
-    loc))
+  (-> (if-let [node (next-explodable loc)]
+        (let [[l r] (z/node node)
+              loc (z/replace node 0)
+              loc (if-let [loc (prev-regular-number loc)]
+                    (-> (z/edit loc + l)
+                        (next-regular-number))
+                    loc)
+              loc (if-let [loc (next-regular-number loc)]
+                    (z/edit loc + r)
+                    loc)]
+          loc)
+        loc)
+      (z/root)
+      (z/vector-zip)))
 
 (defn splitable-loc? [loc]
   (let [node (z/node loc)]
@@ -84,31 +69,50 @@
   (find-next-node loc :next splitable-loc?))
 
 (defn splitable? [loc]
-  (some? (next-splitable (z/root loc))))
+  (some? (next-splitable (z/vector-zip (z/root loc)))))
 
 (defn split [loc]
-  (z/edit loc #(vector (int (Math/ceil (/ % 2)))
-                       (int (Math/floor (/ % 2))))))
+  (let [loc (next-splitable loc)]
+    (-> (z/edit loc #(vector (int (Math/floor (/ % 2)))
+                             (int (Math/ceil (/ % 2)))))
+        (z/root)
+        (z/vector-zip))))
+
+(defn reduce-snf [v]
+  (loop [loc (z/vector-zip v)]
+    (cond
+      (explodable? loc) (recur (explode loc))
+      (splitable? loc) (recur (split loc))
+      :else (z/root loc))))
 
 (defn add-up [z1 z2]
-  (let [loc (z/vector-zip [z1 z2])]
-    (loop [loc loc]
-      (cond
-        (explodable? loc) (recur (explode loc))
-        (splitable? loc) (recur (split loc))
-        :else (z/node (z/root loc))))))
+  (reduce-snf [z1 z2]))
 
-(def z1 "[2 [[7 4] [5 [3 9]]]]")
-(def z2 "[[[[1 4] [0 1]] 4] [3 [8 5]]]")
+(defn magnitude-fn [x]
+  (cond
+    (vector? x) (+ (* 3 (first x))
+                   (* 2 (second x)))
+    (number? x) x))
 
-(add-up z1 z2)
+(defn magnitude [x]
+  (walk/postwalk magnitude-fn x))
 
 (defn a
   ([] (a (slurp (resource "18.txt"))))
   ([input]
    (->> (parse-input input)
-        ;; (reduce add-up)
-        ;; (magnitude)
-        )))
+        (reduce add-up)
+        (magnitude))))
 
-(take 10 (a))
+(defn b
+  ([] (b (slurp (resource "18.txt"))))
+  ([input]
+   (let [numbers (parse-input input)
+         pairs (for [x numbers
+                     y numbers
+                     :when (not= x y)]
+                 (vector x y))]
+     (->> pairs
+          (map #(apply add-up %))
+          (map magnitude)
+          (apply max)))))

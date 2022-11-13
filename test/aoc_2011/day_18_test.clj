@@ -1,5 +1,6 @@
 (ns aoc-2011.day-18-test 
-  (:require [clojure.test :refer [deftest is testing]]))
+  (:require [aoc-2011.day-18 :refer [a b]]
+            [clojure.test :refer [deftest is testing]]))
 
 (def input "[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
 [[[5,[2,8]],4],[5,[[9,9],0]]]
@@ -15,3 +16,7 @@
 (deftest magnitude
   (testing "Day 18 - Part 1"
     (is (= 4140 (a input)))))
+
+(deftest max-magnitude
+  (testing "Day 18 - Part 2"
+    (is (= 3993 (b input)))))
